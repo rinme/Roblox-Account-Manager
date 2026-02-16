@@ -20,8 +20,14 @@ FetchContent_Declare(
     GIT_TAG        v1.15.2
 )
 
-# libsodium wrapper (C library, built separately on Windows)
-# We use vcpkg or system-installed libsodium
+# Prerequisite for libsodium (optional):
+#   - On Windows, install libsodium via vcpkg, e.g.:
+#       vcpkg install libsodium
+#     and configure CMake with the vcpkg toolchain file, e.g.:
+#       cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg.cmake
+#   - On Linux/macOS, install libsodium via your system package manager
+#     or via vcpkg as above.
+# This project expects the CMake package name "unofficial-sodium".
 find_package(unofficial-sodium CONFIG QUIET)
 
 FetchContent_MakeAvailable(json googletest)

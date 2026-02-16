@@ -44,9 +44,10 @@ template <>
 bool IniSection::get_as<bool>(const std::string& name) const {
     auto val = get(name);
     if (val.empty()) return false;
-    // Case-insensitive comparison
+    // Case-insensitive comparison (ASCII-only; INI values are expected to be ASCII)
     std::string lower = val;
-    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
     return lower == "true" || lower == "1" || lower == "yes";
 }
 
@@ -166,6 +167,8 @@ void IniFile::load(std::istream& stream) {
             trim(key);
             trim(value);
 
+            // Intentionally skip entries with an empty key or value.
+            // This matches the C# parser semantics where lines like "key=" are ignored.
             if (!key.empty() && !value.empty()) {
                 current_section->set(key, value);
             }

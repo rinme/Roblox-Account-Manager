@@ -51,33 +51,33 @@ nlohmann::json Account::to_json() const {
 
 Account Account::from_json(const nlohmann::json& j) {
     Account acc;
-    if (j.contains("Valid")) acc.valid = j["Valid"].get<bool>();
-    if (j.contains("SecurityToken"))
-        acc.security_token = j["SecurityToken"].get<std::string>();
-    if (j.contains("Username"))
-        acc.username = j["Username"].get<std::string>();
-    if (j.contains("UserID")) acc.user_id = j["UserID"].get<int64_t>();
-    if (j.contains("BrowserTrackerID"))
-        acc.browser_tracker_id = j["BrowserTrackerID"].get<std::string>();
-    if (j.contains("Group")) acc.group = j["Group"].get<std::string>();
-    if (j.contains("Alias"))
-        acc.set_alias(j["Alias"].get<std::string>());
-    if (j.contains("Description"))
-        acc.set_description(j["Description"].get<std::string>());
-    if (j.contains("Password"))
-        acc.set_password(j["Password"].get<std::string>());
-    if (j.contains("Fields"))
-        acc.fields = j["Fields"].get<std::map<std::string, std::string>>();
+
+    acc.valid = j.value("Valid", false);
+    acc.security_token = j.value("SecurityToken", std::string{});
+    acc.username = j.value("Username", std::string{});
+    acc.user_id = j.value("UserID", int64_t{0});
+    acc.browser_tracker_id = j.value("BrowserTrackerID", std::string{});
+    acc.group = j.value("Group", std::string{"Default"});
+
+    acc.set_alias(j.value("Alias", std::string{}));
+    acc.set_description(j.value("Description", std::string{}));
+    acc.set_password(j.value("Password", std::string{}));
+
+    if (j.contains("Fields")) {
+        try {
+            acc.fields =
+                j["Fields"].get<std::map<std::string, std::string>>();
+        } catch (const nlohmann::json::exception&) {
+        }
+    }
 
     auto from_epoch_ms = [](int64_t ms) {
         return std::chrono::system_clock::time_point(
             std::chrono::milliseconds(ms));
     };
-    if (j.contains("LastUse"))
-        acc.last_use = from_epoch_ms(j["LastUse"].get<int64_t>());
-    if (j.contains("LastAttemptedRefresh"))
-        acc.last_attempted_refresh =
-            from_epoch_ms(j["LastAttemptedRefresh"].get<int64_t>());
+    acc.last_use = from_epoch_ms(j.value("LastUse", int64_t{0}));
+    acc.last_attempted_refresh =
+        from_epoch_ms(j.value("LastAttemptedRefresh", int64_t{0}));
 
     return acc;
 }

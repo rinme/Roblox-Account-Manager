@@ -49,7 +49,9 @@ TEST(UtilitiesTest, FileSHA256EmptyFile) {
     EXPECT_EQ(hash,
               "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855");
 
-    std::filesystem::remove(tmp);
+    std::error_code ec;
+    std::filesystem::remove(tmp, ec);
+    EXPECT_FALSE(ec) << "Failed to clean up test file: " << ec.message();
 }
 
 TEST(UtilitiesTest, FileSHA256KnownContent) {
@@ -64,7 +66,9 @@ TEST(UtilitiesTest, FileSHA256KnownContent) {
     EXPECT_EQ(hash,
               "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
 
-    std::filesystem::remove(tmp);
+    std::error_code ec;
+    std::filesystem::remove(tmp, ec);
+    EXPECT_FALSE(ec) << "Failed to clean up test file: " << ec.message();
 }
 
 // --- Clamp Tests ---
@@ -145,5 +149,6 @@ TEST(UtilitiesTest, RecursiveDeleteCreatesAndDeletes) {
 }
 
 TEST(UtilitiesTest, RecursiveDeleteNonExistent) {
-    EXPECT_TRUE(ram::recursive_delete("/tmp/nonexistent_path_ram_test_xyz"));
+    auto tmp = std::filesystem::temp_directory_path() / "nonexistent_path_ram_test_xyz";
+    EXPECT_TRUE(ram::recursive_delete(tmp.string()));
 }

@@ -53,6 +53,9 @@ std::vector<uint8_t> encrypt(const std::string& content,
                           reinterpret_cast<const uint8_t*>(content.data()),
                           content.size(), nonce, key);
 
+    // Securely clear the derived key from memory after use
+    sodium_memzero(key, sizeof(key));
+
     // Build output: Header | Salt | Nonce | Ciphertext
     std::vector<uint8_t> output;
     output.reserve(kRAMHeader.size() + sizeof(salt) + sizeof(nonce) +
@@ -109,9 +112,11 @@ std::vector<uint8_t> decrypt(const std::vector<uint8_t>& encrypted,
     std::vector<uint8_t> plaintext(plaintext_len);
     if (crypto_secretbox_open_easy(plaintext.data(), ciphertext, ciphertext_len,
                                    nonce, key) != 0) {
+        sodium_memzero(key, sizeof(key));
         return {};
     }
 
+    sodium_memzero(key, sizeof(key));
     return plaintext;
 #else
     (void)encrypted;
