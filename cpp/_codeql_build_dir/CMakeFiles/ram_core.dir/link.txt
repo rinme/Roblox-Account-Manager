@@ -1,2 +1,0 @@
-/usr/bin/ar qc libram_core.a CMakeFiles/ram_core.dir/src/ini_file.cpp.o CMakeFiles/ram_core.dir/src/account.cpp.o CMakeFiles/ram_core.dir/src/utilities.cpp.o CMakeFiles/ram_core.dir/src/cryptography.cpp.o
-/usr/bin/ranlib libram_core.a
