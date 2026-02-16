@@ -1,0 +1,5 @@
+if(EXISTS "/home/runner/work/Roblox-Account-Manager/Roblox-Account-Manager/cpp/_codeql_build_dir/ram_tests[1]_tests.cmake")
+  include("/home/runner/work/Roblox-Account-Manager/Roblox-Account-Manager/cpp/_codeql_build_dir/ram_tests[1]_tests.cmake")
+else()
+  add_test(ram_tests_NOT_BUILT ram_tests_NOT_BUILT)
+endif()

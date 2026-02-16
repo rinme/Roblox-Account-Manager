@@ -10,7 +10,9 @@ namespace ram {
 extern const std::vector<uint8_t> kRAMHeader;
 
 /// Encrypt content using libsodium (XSalsa20-Poly1305 with Argon2 KDF).
-/// Returns encrypted bytes: RAMHeader | Salt(16) | Nonce(24) | Ciphertext.
+/// Returns encrypted bytes:
+///   RAMHeader | Salt(crypto_pwhash_SALTBYTES) |
+///   Nonce(crypto_secretbox_NONCEBYTES) | Ciphertext.
 /// Returns an empty vector if libsodium is not available or on error.
 std::vector<uint8_t> encrypt(const std::string& content,
                              const std::vector<uint8_t>& password);

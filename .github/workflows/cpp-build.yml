@@ -13,6 +13,9 @@ on:
       - '.github/workflows/cpp-build.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: windows-latest
