@@ -331,4 +331,7 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
+# C++ build artifacts
+cpp/build/
+
 # OpenCover UI anal

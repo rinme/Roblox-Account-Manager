@@ -1,0 +1,35 @@
+name: C++ Build & Test (Windows)
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'cpp/**'
+      - '.github/workflows/cpp-build.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'cpp/**'
+      - '.github/workflows/cpp-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        build_type: [Release, Debug]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -S cpp -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }}
+
+      - name: Run tests
+        run: ctest --test-dir build --build-config ${{ matrix.build_type }} --output-on-failure --no-tests=error
