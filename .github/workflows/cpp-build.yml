@@ -36,3 +36,10 @@ jobs:
 
       - name: Run tests
         run: ctest --test-dir build --build-config ${{ matrix.build_type }} --output-on-failure --no-tests=error
+
+      - name: Upload Release artifact
+        if: matrix.build_type == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: RobloxAccountManager-Windows
+          path: build/Release/
